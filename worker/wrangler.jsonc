@@ -1,0 +1,18 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "reading-tracker",
+	"main": "src/index.js",
+	"compatibility_date": "2025-01-01",
+	"observability": {
+		"enabled": true
+	},
+	// You need to create a KV namespace and add its ID here
+	// Run: wrangler kv namespace create READING_DB
+	// Then update the "id" field with the returned ID
+	"kv_namespaces": [
+		{
+			"binding": "READING_DB",
+			"id": "YOUR_KV_NAMESPACE_ID_HERE"
+		}
+	]
+}
