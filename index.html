@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffbc93">
+  <title>Reading Progress Tracker - Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: linear-gradient(135deg, #ffbc93, #e89f6b);
+      min-height: 100vh;
+      padding: 20px;
+      color: #3d2817;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fdf1d5;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 5px;
+      color: #6b4423;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #a0522d;
+      margin-bottom: 20px;
+      font-size: 1em;
+    }
+
+    .demo-badge {
+      background: #ff6b35;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 700;
+      display: inline-block;
+      margin: 0 auto 15px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .state {
+      display: none;
+    }
+
+    .state.active {
+      display: block;
+    }
+
+    /* STATE 1: Name Selection */
+    .form-selection {
+      max-width: 400px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .form-selection label {
+      display: block;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      color: #6b4423;
+    }
+
+    .form-selection select {
+      font-family: Georgia, serif;
+      font-size: 1.3em;
+      padding: 15px;
+      width: 100%;
+      border: 2px solid #d2691e;
+      border-radius: 8px;
+      background: #fff;
+      color: #6b4423;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-selection select:hover {
+      border-color: #ff8c42;
+      box-shadow: 0 4px 10px rgba(210, 105, 30, 0.3);
+    }
+
+    .form-selection select:focus {
+      outline: none;
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+    }
+
+    /* STATE 2: Page Count Input */
+    .form-pages {
+      max-width: 400px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .form-pages label {
+      display: block;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      color: #6b4423;
+    }
+
+    .form-pages input,
+    .form-pages select {
+      font-family: Georgia, serif;
+      font-size: 1.5em;
+      padding: 12px;
+      width: 100%;
+      border: 2px solid #d2691e;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-pages select {
+      cursor: pointer;
+    }
+
+    .form-pages select option:disabled {
+      color: #999;
+    }
+
+    .btn-primary {
+      font-size: 1.3em;
+      font-weight: 700;
+      padding: 15px 40px;
+      background: linear-gradient(135deg, #ff6b35, #d9534f);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-primary:disabled {
+      background: #999;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* STATE 3: Dashboard */
+    .update-section {
+      background: #ffe8cc;
+      border: 2px solid #eca677;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .update-section h2 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #6b4423;
+    }
+
+    .form-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .form-inline input {
+      font-family: Georgia, serif;
+      font-size: 1.1em;
+      padding: 8px;
+      border: 2px solid #eca677;
+      border-radius: 5px;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Remove number input arrows */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .form-inline button {
+      font-size: 1em;
+      font-weight: 700;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #ff8c42, #ffa94d);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-inline button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-list {
+      margin-top: 20px;
+    }
+
+    .progress-list h2 {
+      font-size: 1.4em;
+      margin-bottom: 15px;
+      color: #6b4423;
+      text-align: center;
+    }
+
+    #cards-container {
+      background: #fff;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .reader-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+    }
+
+    .reader-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Progress bar animation */
+    @keyframes colorFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3); }
+      50% { box-shadow: 0 2px 12px rgba(255, 107, 53, 0.5); }
+    }
+
+    .reader-item.own .progress-bar {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    .bar-container {
+      background: #e0e0e0;
+      height: 20px;
+      border-radius: 10px;
+      overflow: visible;
+      margin-bottom: 5px;
+      margin-top: 25px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .emoji-marker {
+      position: absolute;
+      top: -24px;
+      font-size: 20px;
+      transform: translateX(-50%);
+      transition: left 0.5s ease;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.75em;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background-size: 200% 200%;
+      animation: colorFlow 4s ease infinite;
+    }
+
+    .info-row {
+      font-size: 0.9em;
+      color: #6b5d52;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reader-name {
+      font-weight: 700;
+      color: #6b4423;
+    }
+
+    .page-info {
+      color: #8b7355;
+      font-size: 0.95em;
+    }
+
+    .error-message {
+      background: #ffe4d6;
+      border: 2px solid #d9534f;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      color: #8b2500;
+      text-align: center;
+    }
+
+    .success-message {
+      background: #fff3e0;
+      border: 2px solid #ffa94d;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      color: #8b5a00;
+      text-align: center;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 1em;
+      color: #8b7355;
+    }
+
+    /* Switch User Button */
+    .switch-user-section {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px solid #eca677;
+    }
+
+    .btn-secondary {
+      font-size: 1em;
+      font-weight: 700;
+      padding: 10px 30px;
+      background: linear-gradient(135deg, #8b7355, #6b5d52);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Discord Notification Popup */
+    .discord-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #5865f2;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      font-size: 1em;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(400px);
+      transition: all 0.4s ease;
+    }
+
+    .discord-notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .discord-notification::before {
+      content: "💬 Discord notification";
+      display: block;
+      font-size: 0.75em;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+        margin-bottom: 0px;
+      }
+
+      .subtitle {
+        font-size: 1em;
+      }
+
+      .form-inline {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .form-inline input,
+      .form-inline button {
+        width: 100%;
+      }
+
+      .progress-list h2 {
+        font-size: 1.2em;
+      }
+
+      .info-row {
+        font-size: 0.85em;
+      }
+
+      #cards-container {
+        padding: 12px;
+      }
+
+      .discord-notification {
+        right: 10px;
+        left: 10px;
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reading Progress Tracker (web demo)</h1>
+    <p class="subtitle">The Silmarillion by JRR Tolkien</p>
+
+    <!-- STATE 1: Name Selection -->
+    <div id="state-selection" class="state">
+      <div class="form-selection">
+        <label for="select-name">Select your name to get started</label>
+        <select id="select-name">
+          <option value="">-- Choose your name --</option>
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+          <option value="Charlie">Charlie</option>
+          <option value="Diana">Diana</option>
+          <option value="Eve">Eve</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- STATE 2: Total Pages Input -->
+    <div id="state-pages" class="state">
+      <div class="form-pages">
+        <h2 id="welcome-name"></h2>
+        <label for="input-total-pages">Enter the last page number of the book</label>
+        <input type="number" id="input-total-pages" min="1" max="9999" placeholder="e.g. 350">
+        <label for="select-emoji">Choose your emoji</label>
+        <select id="select-emoji">
+          <option value="">-- Choose your emoji --</option>
+        </select>
+        <button id="btn-start" class="btn-primary">Let's Go!</button>
+        <div id="message-pages"></div>
+      </div>
+    </div>
+
+    <!-- STATE 3: Progress Dashboard -->
+    <div id="state-dashboard" class="state">
+      <div class="update-section">
+        <div class="form-inline">
+          <label for="input-current-page" style="flex: 0 0 auto;">Current page:</label>
+          <input type="number" id="input-current-page" min="0">
+          <button id="btn-update">Update</button>
+        </div>
+        <div id="message-update"></div>
+      </div>
+
+      <div class="progress-list">
+        <h2>Everyone's Progress</h2>
+        <div id="cards-container"></div>
+
+        <div class="switch-user-section">
+          <button id="btn-switch-user" class="btn-secondary">Try Another User</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discord Notification Popup -->
+  <div id="discord-notification" class="discord-notification"></div>
+
+  <script>
+    // DEMO MODE - All data stored in localStorage
+    const STORAGE_KEY = 'reading_tracker_demo_data';
+    const CURRENT_USER_KEY = 'reading_tracker_demo_current_user';
+    const AVAILABLE_EMOJIS = ["📚", "📖", "🦊", "🐻", "🦁", "🐼", "🦄"];
+    const PARTICIPANTS = ["Alice", "Bob", "Charlie", "Diana", "Eve"];
+    const NOTIFICATION_THRESHOLDS = {
+      50: (name) => `${name} is halfway through the book!`,
+      75: (name) => `${name} has reached 75%!`,
+      90: (name) => `${name} is at 90%!`
+    };
+
+    let currentName = null;
+
+    // DOM Elements
+    const stateSelection = document.getElementById('state-selection');
+    const statePages = document.getElementById('state-pages');
+    const stateDashboard = document.getElementById('state-dashboard');
+
+    const selectName = document.getElementById('select-name');
+    const welcomeName = document.getElementById('welcome-name');
+    const inputTotalPages = document.getElementById('input-total-pages');
+    const selectEmoji = document.getElementById('select-emoji');
+    const btnStartEl = document.getElementById('btn-start');
+    const messagePages = document.getElementById('message-pages');
+
+    const inputCurrentPage = document.getElementById('input-current-page');
+    const btnUpdate = document.getElementById('btn-update');
+    const messageUpdate = document.getElementById('message-update');
+    const cardsContainer = document.getElementById('cards-container');
+    const btnSwitchUser = document.getElementById('btn-switch-user');
+    const discordNotification = document.getElementById('discord-notification');
+
+    // Utility functions
+    function showState(state) {
+      document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+      state.classList.add('active');
+    }
+
+    function showMessage(element, text, type) {
+      element.className = type === 'error' ? 'error-message' : 'success-message';
+      element.textContent = text;
+    }
+
+    function showDiscordNotification(message) {
+      discordNotification.textContent = message;
+      discordNotification.classList.add('show');
+
+      setTimeout(() => {
+        discordNotification.classList.remove('show');
+      }, 4000);
+    }
+
+    // Data management
+    function getData() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (!data) {
+        const initial = { readers: [] };
+        PARTICIPANTS.forEach(name => {
+          initial.readers.push({
+            name,
+            totalPages: 0,
+            currentPage: 0,
+            percentage: 0,
+            emoji: null,
+            lastMilestone: 0
+          });
+        });
+        return initial;
+      }
+      return JSON.parse(data);
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function getReader(name) {
+      const data = getData();
+      return data.readers.find(r => r.name === name);
+    }
+
+    function updateReader(name, updates) {
+      const data = getData();
+      const reader = data.readers.find(r => r.name === name);
+      if (reader) {
+        Object.assign(reader, updates);
+        saveData(data);
+      }
+    }
+
+    function getAvailableEmojis() {
+      const data = getData();
+      return AVAILABLE_EMOJIS.map(emoji => {
+        const usedBy = data.readers.find(r => r.emoji === emoji && r.totalPages > 0);
+        return {
+          emoji,
+          available: !usedBy,
+          usedBy: usedBy ? usedBy.name : null
+        };
+      });
+    }
+
+    // Generate color based on emoji
+    function getColorFromEmoji(emoji) {
+      if (!emoji) return 'linear-gradient(90deg, #95a5a6, #7f8c8d)';
+
+      const emojiColors = {
+        '📚': ['#8b4513', '#a0522d'],
+        '📖': ['#daa520', '#b8860b'],
+        '🦊': ['#ff6347', '#ff4500'],
+        '🐻': ['#8b4513', '#654321'],
+        '🦁': ['#ffa500', '#ff8c00'],
+        '🐼': ['#696969', '#2f4f4f'],
+        '🦄': ['#ff69b4', '#da70d6'],
+      };
+
+      if (emojiColors[emoji]) {
+        const [c1, c2] = emojiColors[emoji];
+        return `linear-gradient(135deg, ${c1}, ${c2})`;
+      }
+
+      return 'linear-gradient(90deg, #95a5a6, #7f8c8d)';
+    }
+
+    // Render dashboard
+    function renderProgress() {
+      const data = getData();
+      cardsContainer.innerHTML = '';
+
+      const activeReaders = data.readers.filter(r => r.totalPages > 0);
+
+      if (activeReaders.length === 0) {
+        cardsContainer.innerHTML = '<p style="text-align: center; color: #999;">No readers initialized yet</p>';
+        return;
+      }
+
+      activeReaders.forEach(reader => {
+        const item = document.createElement('div');
+        item.className = 'reader-item';
+        if (reader.name === currentName) {
+          item.classList.add('own');
+        }
+
+        const percentage = reader.percentage || 0;
+        const completed = percentage >= 100;
+        const emojiPosition = Math.min(percentage, 100);
+
+        const barColor = completed
+          ? 'linear-gradient(90deg, #27ae60, #229954)'
+          : getColorFromEmoji(reader.emoji);
+
+        item.innerHTML = `
+          <div class="bar-container">
+            ${reader.emoji ? `<span class="emoji-marker" style="left: ${emojiPosition}%">${reader.emoji}</span>` : ''}
+            <div class="progress-bar ${completed ? 'completed' : ''}" style="width: ${emojiPosition}%; background: ${barColor}">
+              ${percentage > 20 ? percentage.toFixed(1) + '%' : ''}
+            </div>
+          </div>
+          <div class="info-row">
+            <span class="reader-name">${reader.name}</span>
+            <span class="page-info">Page ${reader.currentPage} of ${reader.totalPages}</span>
+          </div>
+        `;
+
+        cardsContainer.appendChild(item);
+      });
+    }
+
+    function loadAndPopulateEmojis() {
+      const emojis = getAvailableEmojis();
+      selectEmoji.innerHTML = '<option value="">-- Choose your emoji --</option>';
+      emojis.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.emoji;
+        option.textContent = item.emoji;
+        if (!item.available) {
+          option.disabled = true;
+          option.textContent = `${item.emoji} (${item.usedBy})`;
+        }
+        selectEmoji.appendChild(option);
+      });
+    }
+
+    function checkAndNotifyMilestone(name, oldPercentage, newPercentage) {
+      const reader = getReader(name);
+      const lastMilestone = reader.lastMilestone || 0;
+
+      for (const [threshold, getMessage] of Object.entries(NOTIFICATION_THRESHOLDS)) {
+        const thresholdNum = parseInt(threshold);
+        if (newPercentage >= thresholdNum && lastMilestone < thresholdNum) {
+          showDiscordNotification(getMessage(name));
+          updateReader(name, { lastMilestone: thresholdNum });
+          break;
+        }
+      }
+    }
+
+    // Event handlers
+    selectName.addEventListener('change', () => {
+      const name = selectName.value;
+      if (!name) return;
+
+      currentName = name;
+      localStorage.setItem(CURRENT_USER_KEY, name);
+
+      const reader = getReader(name);
+
+      if (reader && reader.totalPages > 0) {
+        showState(stateDashboard);
+        renderProgress();
+      } else {
+        welcomeName.textContent = `Welcome, ${name}!`;
+        showState(statePages);
+        loadAndPopulateEmojis();
+      }
+    });
+
+    btnStartEl.addEventListener('click', () => {
+      const totalPages = parseInt(inputTotalPages.value);
+      const emoji = selectEmoji.value;
+
+      if (!totalPages || totalPages < 1 || totalPages > 9999) {
+        showMessage(messagePages, 'Please enter a valid number between 1 and 9999', 'error');
+        return;
+      }
+
+      if (!emoji) {
+        showMessage(messagePages, 'Please select an emoji', 'error');
+        return;
+      }
+
+      updateReader(currentName, {
+        totalPages,
+        currentPage: 0,
+        percentage: 0,
+        emoji,
+        lastMilestone: 0
+      });
+
+      showState(stateDashboard);
+      renderProgress();
+    });
+
+    btnUpdate.addEventListener('click', () => {
+      const currentPage = parseInt(inputCurrentPage.value);
+
+      if (currentPage === undefined || currentPage === null || currentPage < 0) {
+        showMessage(messageUpdate, 'Please enter a valid number >= 0', 'error');
+        return;
+      }
+
+      const reader = getReader(currentName);
+
+      if (!reader || !reader.totalPages) {
+        showMessage(messageUpdate, 'Please initialize your progress first', 'error');
+        return;
+      }
+
+      if (currentPage > reader.totalPages) {
+        showMessage(messageUpdate, `Page cannot exceed ${reader.totalPages}`, 'error');
+        return;
+      }
+
+      const oldPercentage = reader.percentage || 0;
+      const newPercentage = (currentPage / reader.totalPages) * 100;
+
+      updateReader(currentName, {
+        currentPage,
+        percentage: newPercentage
+      });
+
+      inputCurrentPage.value = '';
+      messageUpdate.textContent = '';
+      renderProgress();
+
+      // Check for milestone notifications
+      checkAndNotifyMilestone(currentName, oldPercentage, newPercentage);
+    });
+
+    btnSwitchUser.addEventListener('click', () => {
+      currentName = null;
+      localStorage.removeItem(CURRENT_USER_KEY);
+      selectName.value = '';
+      inputTotalPages.value = '';
+      inputCurrentPage.value = '';
+      messagePages.textContent = '';
+      messageUpdate.textContent = '';
+      showState(stateSelection);
+    });
+
+    // Initialization
+    (function init() {
+      const savedName = localStorage.getItem(CURRENT_USER_KEY);
+
+      if (savedName) {
+        currentName = savedName;
+        const reader = getReader(savedName);
+
+        if (reader && reader.totalPages > 0) {
+          selectName.value = savedName;
+          showState(stateDashboard);
+          renderProgress();
+        } else {
+          selectName.value = savedName;
+          welcomeName.textContent = `Welcome, ${savedName}!`;
+          showState(statePages);
+          loadAndPopulateEmojis();
+        }
+      } else {
+        showState(stateSelection);
+      }
+    })();
+  </script>
+</body>
+</html>
