@@ -2,17 +2,19 @@
 
 A collaborative Progressive Web App (PWA) for book clubs to track reading progress in real-time. Built with vanilla JavaScript frontend and Cloudflare Workers backend.
 
+**This is a personal and informal project**: it's designed for small groups of trusted friends. Since everything is kept simple, it's pretty easy to mess up data if someone decides to, so keep that in mind.
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Features
 
 - **Real-time Progress Tracking**: See everyone's reading progress at a glance
-- **Progressive Web App**: Install on mobile devices for native app experience
-- **Animated Progress Bars**: Beautiful emoji markers and colored progress bars
+- **Progressive Web App**: Install on mobile devices for a native-like experience
+- **Animated Progress Bars**: Emoji markers and colored progress bars
 - **Offline Support**: Service worker caches static assets
 - **Discord Notifications**: Optional milestone notifications (50%, 75%, 90%)
 - **Zero Dependencies**: Pure vanilla JavaScript frontend
-- **Serverless**: Cloudflare Workers + KV for scalable, low-latency backend
+- **Serverless**: Cloudflare Workers + KV backend
 
 ## Demo
 
@@ -233,8 +235,8 @@ For a small book club, you'll likely never exceed these limits.
 
 ## License
 
-MIT License - feel free to use this for your own book club!
+MIT License – use it however you want.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Pull requests are welcome if you want to contribute.
