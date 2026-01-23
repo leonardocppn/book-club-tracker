@@ -8,13 +8,13 @@ A collaborative Progressive Web App (PWA) for book clubs to track reading progre
 
 ## Features
 
-- **Real-time Progress Tracking**: See everyone's reading progress at a glance
-- **Progressive Web App**: Install on mobile devices for a native-like experience
-- **Animated Progress Bars**: Emoji markers and colored progress bars
-- **Offline Support**: Service worker caches static assets
-- **Discord Notifications**: Optional milestone notifications (50%, 75%, 90%)
-- **Zero Dependencies**: Pure vanilla JavaScript frontend
-- **Serverless**: Cloudflare Workers + KV backend
+- Shows everyone's reading progress with visual indicators
+- Can be installed on mobile devices as a PWA
+- Uses emoji markers and colored progress bars
+- Service worker caches static assets for offline access
+- Optional Discord notifications at reading milestones (50%, 75%, 90%)
+- Frontend built with vanilla JavaScript (no dependencies)
+- Backend runs on Cloudflare Workers with KV storage
 
 ## Demo
 
